@@ -18,7 +18,13 @@
       }
 
       body {
-        background: linear-gradient(135deg, #000033 0%, #000066 100%);
+        /* background: linear-gradient(135deg, #000033 0%, #000066 100%); */
+        background-image: url("./fbg.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        background-attachment: fixed;
+
         color: #ffffff;
         min-height: 100vh;
         display: flex;
@@ -250,7 +256,7 @@
 
       .langbtnC {
         position: absolute;
-        top: 1rem;
+        top: 0rem;
         right: 1rem;
         z-index: 1;
         padding: 1rem;
@@ -260,13 +266,20 @@
       .langbtn {
         /* position: absolute; */
 
-        background-color: #935da5;
-        color: white;
+        color: rgb(162, 12, 12);
         border: none;
-        padding: 10px 20px;
-        font-size: 1rem;
+        padding: 12px 22px;
+        font-size: 1.2rem;
         border-radius: 5px;
         cursor: pointer;
+        /* background: linear-gradient(
+          135deg,
+          #4b0082 0%,
+          #9400d3 100%
+        ); */
+      }
+      #langbtn {
+        color: white;
       }
     </style>
   </head>
@@ -283,9 +296,7 @@
         id="btnlang"
         onclick="window.location.href='en.html'"
       >
-        <a style="color: white; text-decoration: none" id="langbtn">
-          تغيير اللغة
-        </a>
+        <a id="langbtn"> تغيير اللغة </a>
       </button>
     </div>
 
