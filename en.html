@@ -17,7 +17,13 @@
       }
 
       body {
-        background: linear-gradient(135deg, #000033 0%, #000066 100%);
+        /* background: linear-gradient(135deg, #000033 0%, #000066 100%); */
+        background-image: url("./fbg.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: repeat;
+        background-attachment: fixed;
+
         color: #ffffff;
         min-height: 100vh;
         display: flex;
@@ -59,6 +65,7 @@
         font-size: 3.5rem;
         margin: 2rem 0;
         color: #ffffff;
+        /* text-shadow: 0 0 20px rgba(255, 255, 255, 0.3); */
       }
 
       .boxes-container {
@@ -213,6 +220,7 @@
         background: rgba(0, 153, 51, 0.9);
       }
 
+      /* Footer */
       .footer {
         position: fixed;
         bottom: 0;
@@ -247,7 +255,7 @@
 
       .langbtnC {
         position: absolute;
-        top: 1rem;
+        top: 0rem;
         right: 1rem;
         z-index: 1;
         padding: 1rem;
@@ -255,13 +263,22 @@
       }
 
       .langbtn {
-        background-color: #935da5;
-        color: white;
+        /* position: absolute; */
+
+        color: rgb(162, 12, 12);
         border: none;
-        padding: 10px 20px;
-        font-size: 1rem;
+        padding: 12px 22px;
+        font-size: 1.2rem;
         border-radius: 5px;
         cursor: pointer;
+        /* background: linear-gradient(
+          135deg,
+          #4b0082 0%,
+          #9400d3 100%
+        ); */
+      }
+      #langbtn {
+        color: white;
       }
     </style>
   </head>
@@ -278,9 +295,7 @@
         id="btnlang"
         onclick="window.location.href='ar.html'"
       >
-        <a style="color: white; text-decoration: none" id="langbtn">
-          Change Language
-        </a>
+        <a id="langbtn"> Change Language </a>
       </button>
     </div>
 
@@ -290,7 +305,7 @@
       <div class="boxes-container">
         <div class="box" onclick="showQuestion('traffic')">
           <h2>Traffic</h2>
-          <p>Solutions for Traffic Congestion</p>
+          <p>Traffic Congestion Solutions</p>
         </div>
         <div class="box" onclick="showQuestion('real_estate')">
           <h2>Real Estate</h2>
@@ -298,7 +313,7 @@
         </div>
         <div class="box" onclick="showQuestion('tourism')">
           <h2>Tourism</h2>
-          <p>Developing Domestic Tourism</p>
+          <p>Domestic Tourism Development</p>
         </div>
       </div>
     </div>
@@ -362,11 +377,11 @@
       let currentSector = "";
       const questions = {
         traffic:
-          "Suggest creative solutions using technology to analyze and reduce traffic congestion in Riyadh?",
+          "How can technology be leveraged to develop creative solutions for alleviating traffic congestion in Riyadh?",
         real_estate:
-          "How can real estate financing systems be improved to better suit different segments of society?",
+          "How can real estate financing systems be optimized to better serve the needs of various demographics?",
         tourism:
-          "How can we develop an innovative tourism experience that combines Saudi heritage and modern technology to attract local and international tourists?",
+          "How can we leverage technology to enhance Saudi tourism and offer a distinctive experience that merges tradition with modernity?",
       };
 
       function showAlert(message, isSuccess = false) {
