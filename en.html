@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hackathon - Interactive Booth</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="upgrade-insecure-requests"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #000033 0%, #000066 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        direction: ltr;
+      }
+
+      .screen {
+        width: 100%;
+        max-width: 1200px;
+        padding: 2rem;
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -45%);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 3.5rem;
+        margin: 2rem 0;
+        color: #ffffff;
+      }
+
+      .boxes-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 4rem;
+        padding: 0 2rem;
+      }
+
+      .box {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .box:hover {
+        transform: translateY(-10px);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .box h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: #ffffff;
+      }
+
+      .box p {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+      }
+
+      .question-container,
+      .form-container {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 3rem;
+        margin: 2rem auto;
+        max-width: 800px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .question-container h2,
+      .form-container h2 {
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        text-align: center;
+        color: #ffffff;
+      }
+
+      textarea,
+      input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 1rem;
+        font-size: 1.1rem;
+        color: #ffffff;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      textarea {
+        height: 150px;
+        resize: none;
+      }
+
+      textarea:focus,
+      input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      textarea::placeholder,
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      button {
+        background: linear-gradient(135deg, #0033cc 0%, #0066ff 100%);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+        background: linear-gradient(135deg, #0044dd 0%, #0077ff 100%);
+      }
+
+      .back-btn {
+        background: rgba(255, 255, 255, 0.1);
+        margin-top: 1rem;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .alert {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+      }
+
+      .alert.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .success-alert {
+        background: rgba(0, 153, 51, 0.9);
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        background: rgba(0, 0, 51, 0.5);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+      }
+
+      .footer a {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      .logo {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1;
+      }
+
+      .langbtnC {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1;
+        padding: 1rem;
+        display: inline-block;
+      }
+
+      .langbtn {
+        background-color: #935da5;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="alert" id="alert"></div>
+
+    <div class="logo">
+      <img src="./pbs.png" alt="Logo" width="130" />
+    </div>
+
+    <div class="langbtnC">
+      <button
+        class="langbtn"
+        id="btnlang"
+        onclick="window.location.href='ar.html'"
+      >
+        <a style="color: white; text-decoration: none" id="langbtn">
+          Change Language
+        </a>
+      </button>
+    </div>
+
+    <!-- first screen -->
+    <div class="screen active" id="main-screen">
+      <h1>PBS Hackathon</h1>
+      <div class="boxes-container">
+        <div class="box" onclick="showQuestion('traffic')">
+          <h2>Traffic</h2>
+          <p>Solutions for Traffic Congestion</p>
+        </div>
+        <div class="box" onclick="showQuestion('real_estate')">
+          <h2>Real Estate</h2>
+          <p>Real Estate Financing Solutions</p>
+        </div>
+        <div class="box" onclick="showQuestion('tourism')">
+          <h2>Tourism</h2>
+          <p>Developing Domestic Tourism</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- second screen -->
+    <div class="screen" id="question-screen">
+      <div class="question-container">
+        <h2 id="sector-question"></h2>
+        <textarea
+          placeholder="Write your answer here..."
+          id="answer"
+        ></textarea>
+        <button onclick="showUserInfo()">Next</button>
+        <button class="back-btn" onclick="showMainScreen()">Back</button>
+      </div>
+    </div>
+
+    <!-- third screen -->
+    <div class="screen" id="user-info-screen">
+      <div class="form-container">
+        <h2>Please Enter Your Information</h2>
+        <form id="user-form" onsubmit="handleSubmit(event)">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required />
+          </div>
+          <div class="form-group">
+            <label for="organization">Organization/Institution</label>
+            <input type="text" id="organization" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Mobile Number</label>
+            <input type="tel" id="phone" required />
+          </div>
+          <button type="submit">Submit</button>
+          <button
+            type="button"
+            class="back-btn"
+            onclick="showQuestion(currentSector)"
+          >
+            Back
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="https://linkedin.com/company/in/pbsksa" target="_blank"
+        >@pbsksa</a
+      >
+      <a href="https://www.pbs.sa" target="_blank">www.pbs.sa</a>
+      <a href="mailto:info2023@pbs.sa">info2023@pbs.sa</a>
+      <a href="tel:0555472570">055 547 2570</a>
+    </div>
+
+    <script>
+      let currentSector = "";
+      const questions = {
+        traffic:
+          "Suggest creative solutions using technology to analyze and reduce traffic congestion in Riyadh?",
+        real_estate:
+          "How can real estate financing systems be improved to better suit different segments of society?",
+        tourism:
+          "How can we develop an innovative tourism experience that combines Saudi heritage and modern technology to attract local and international tourists?",
+      };
+
+      function showAlert(message, isSuccess = false) {
+        const alert = document.getElementById("alert");
+        alert.textContent = message;
+        alert.classList.toggle("success-alert", isSuccess);
+        alert.classList.add("show");
+        setTimeout(() => {
+          alert.classList.remove("show");
+        }, 3000);
+      }
+
+      function showScreen(screenId) {
+        document.querySelectorAll(".screen").forEach((screen) => {
+          screen.classList.remove("active");
+        });
+        document.getElementById(screenId).classList.add("active");
+      }
+
+      function showMainScreen() {
+        showScreen("main-screen");
+      }
+
+      function showQuestion(sector) {
+        currentSector = sector;
+        document.getElementById("sector-question").textContent =
+          questions[sector];
+        showScreen("question-screen");
+        document.getElementById("answer").classList.remove("error");
+      }
+
+      function validateInput(input) {
+        if (!input.value.trim()) {
+          input.classList.add("error");
+          return false;
+        }
+        input.classList.remove("error");
+        return true;
+      }
+
+      function showUserInfo() {
+        const answerInput = document.getElementById("answer");
+        if (!validateInput(answerInput)) {
+          showAlert("Please write your answer");
+          return;
+        }
+        showScreen("user-info-screen");
+      }
+
+      function handleSubmit(event) {
+        event.preventDefault();
+
+        const inputs = event.target.querySelectorAll("input");
+        let isValid = true;
+
+        inputs.forEach((input) => {
+          if (!validateInput(input)) {
+            isValid = false;
+            showAlert(
+              `Please fill in ${input.previousElementSibling.textContent}`
+            );
+          }
+        });
+
+        if (!isValid) return;
+
+        const formData = {
+          sector: currentSector,
+          answer: document.getElementById("answer").value,
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          organization: document.getElementById("organization").value,
+          phone: document.getElementById("phone").value,
+        };
+
+        let saved = false;
+
+        try {
+          localStorage.setItem("form_data", JSON.stringify(formData));
+          saved = true;
+        } catch (error) {
+          console.error("Failed to cache form data", error);
+        }
+
+        try {
+          fetch("https://spl-per-default-rtdb.firebaseio.com/PBS.json", {
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          saved = true;
+        } catch (error) {
+          console.error("Failed to send form data", error);
+        }
+
+        if (!saved) {
+          showAlert("Failed to save your data, please try again later");
+          return;
+        }
+
+        console.log("Form submitted:", formData);
+        showAlert("Thank you for your participation!", true);
+
+        event.target.reset();
+        document.getElementById("answer").value = "";
+        setTimeout(() => {
+          showMainScreen();
+        }, 1000);
+      }
+
+      document.querySelectorAll("input, textarea").forEach((input) => {
+        input.addEventListener("blur", () => validateInput(input));
+        input.addEventListener("input", () => {
+          if (input.classList.contains("error")) {
+            validateInput(input);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
