@@ -280,6 +280,24 @@
       #langbtn {
         color: white;
       }
+
+      .qr-code {
+        position: fixed;
+        bottom: 5rem;
+        right: 1rem;
+        z-index: 1;
+        background: rgba(255, 255, 255, 0.3);
+        padding: 10px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+
+      .qr-code img {
+        width: 180px;
+        height: 180px;
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -297,6 +315,10 @@
       >
         <a id="langbtn"> Change Language </a>
       </button>
+    </div>
+
+    <div class="qr-code">
+      <img src="./qr.png" alt="QR Code" />
     </div>
 
     <!-- first screen -->
@@ -402,6 +424,8 @@
       }
 
       function showMainScreen() {
+        // show the qr code
+        document.querySelector(".qr-code").style.display = "block";
         showScreen("main-screen");
       }
 
@@ -409,6 +433,10 @@
         currentSector = sector;
         document.getElementById("sector-question").textContent =
           questions[sector];
+
+        // remove the qr code
+        document.querySelector(".qr-code").style.display = "none";
+
         showScreen("question-screen");
         document.getElementById("answer").classList.remove("error");
       }
